@@ -3,7 +3,8 @@ const { inquirerMenu,
         pausa,
         leerInput, 
         listadoTareasBorrar,
-        confirmar } = require('./helpers/inquirer')
+        confirmar,
+        mostrarListadoChecklist } = require('./helpers/inquirer')
 const Tarea = require('./models/tarea')
 const Tareas = require('./models/tareas')
 require('colors')
@@ -41,13 +42,19 @@ const main = async() => {
       case '4':
         tareas.listarPendientesCompletadas(false)
         break;
+      case '5':
+        const ids = await mostrarListadoChecklist(tareas.listadoArr)
+        console.log(ids)
+        break;
       case '6':
         const id = await listadoTareasBorrar(tareas.listadoArr)
-        const confirmarBorrar = confirmar('¿Estas seguro?')
-        if(confirmarBorrar) {
-          tareas.borrarTarea( id )
+        if(id !== '0'){
+          const confirmarBorrar = await confirmar('¿Estas seguro?')
+          if(confirmarBorrar) {
+            tareas.borrarTarea( id )
+            console.log('Tarea borrada!'.green)
+          }
         }
-        console.log('Tarea Borrada!')
         break;
     }
 
