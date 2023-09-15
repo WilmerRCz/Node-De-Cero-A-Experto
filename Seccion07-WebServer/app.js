@@ -1,10 +1,15 @@
 const express = require('express')
 const hbs = require('hbs')
+require('dotenv').config()
+
+
+
+const PORT = process.env.PORT
 const app = express()
-const PORT = 3000
 
-
+//Handlebars
 app.set('view engine', 'hbs')
+hbs.registerPartials(__dirname + '/views/partials')
 
 //Middleware
 app.use(express.static('public'))
@@ -18,16 +23,20 @@ app.get('/', (req, res) => {
 })
 
 app.get('/generic', (req, res) => {
-  res.sendFile(__dirname + '/public/generic.html')
+  res.render('generic', {
+    nombre: 'Wilmer Rodriguez',
+    titulo: 'Curso Nodejs'
+  })
 })
 
 app.get('/elements', (req, res) => {
-  res.sendFile(__dirname + '/public/elements.html')
-})
+  res.render('elements', {
+    nombre: 'Wilmer Rodriguez',
+    titulo: 'Curso Nodejs'
+  })})
 
 app.get('*', (req, res) => {
-  res.sendFile(__dirname + '/public/404.html')
-})
+  res.render('404')})
 app.listen(PORT, () => {
   console.log(`App listening in port: ${PORT}`)
 })
