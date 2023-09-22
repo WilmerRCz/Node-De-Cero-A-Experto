@@ -1,6 +1,7 @@
 const { response, request } = require("express")
 const bcryptjs = require('bcryptjs')
 const User = require("../models/user")
+const { generateToken } = require('../helpers/generateToken')
 
 
 
@@ -30,9 +31,11 @@ const login = async(req = request, res = response) => {
       })  
     }
 
+    const token = await generateToken(user.id)
 
     res.json({
-      token: 'sss'
+      user,
+      token
     })
     
   } catch (error) {
