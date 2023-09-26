@@ -1,7 +1,8 @@
-const { response, request } = require("express")
+const { response, request, json } = require("express")
 const bcryptjs = require('bcryptjs')
 const User = require("../models/user")
 const { generateToken } = require('../helpers/generateToken')
+const { googleVerify } = require("../helpers/google-verify")
 
 
 
@@ -49,10 +50,48 @@ const login = async(req = request, res = response) => {
 const googleSignIn = async (req, res = response) => {
   const { id_token } = req.body;
 
-  res.json({
-    message: 'OK!',
-    id_token
-  })
+  try {
+
+    const { name, email, image} = await googleVerify( id_token );
+    
+    let user = await User.findOne({ email })
+
+    if ( !user ){
+
+      const data = {
+        name,
+        email,
+        password: ':p',
+        image,
+        role: 'USER_ROLE',
+        isGoogle: true
+      }
+
+      user = new User( data );
+      await user.save();
+
+    }
+
+    if ( !user.status) {
+      return res.status(401).json({
+        message: 'User deleted'
+      })
+    }
+
+    const token = await generateToken(user.id);
+
+    res.json({
+      user,
+      token
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({
+      message: 'Token not verify'
+    })
+  }
+
 }
 
 
