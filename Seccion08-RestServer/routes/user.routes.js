@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const { check } = require('express-validator')
-const { getUser, createUser, editUser, deleteUser } = require('../controllers/user.controller')
+const { getUser, createUser, deleteUser, updateUser } = require('../controllers/user.controller')
 const { isExistsRole, isExistsEmail, isExistsUserId } = require('../helpers/db-validators')
 const { validateInputs, validateToken, isRole} = require('../middlewares')
 
@@ -22,7 +22,7 @@ router.put('/:id', [
   check('id').custom(isExistsUserId),
   check('role').custom( isExistsRole ),
   validateInputs
-] , editUser)
+] , updateUser)
 
 router.delete('/:id',[
   validateToken,

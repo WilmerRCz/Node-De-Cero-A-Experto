@@ -41,7 +41,7 @@ const createUser = async (req, res = response) => {
   })
 }
 
-const editUser = async (req, res) => {
+const updateUser = async (req, res) => {
   const id = req.params.id
   const { _id, password, isGoogle, email, ...updateUser } = req.body
   
@@ -79,6 +79,6 @@ const deleteUser = async (req = request, res = response) => {
 module.exports = {
   getUser,
   createUser,
-  editUser,
+  updateUser,
   deleteUser
 }
