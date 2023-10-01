@@ -4,11 +4,11 @@ const { User, Category, Product } = require('../models')
 const allowedCollections = [
   'users',
   'categories',
-  'product',
+  'products',
   'role'
 ]
 
-const searchUser = async (term = '', res  = response) => {
+const searchUsers = async (term = '', res  = response) => {
   try {
 
     const isMongoId = ObjectId.isValid( term );
@@ -20,12 +20,76 @@ const searchUser = async (term = '', res  = response) => {
       })
     }
 
-    
+    const regex = new RegExp(term, 'i');
 
+    const users = await User.find({
+      $or: [{name: regex}, {email: regex}],
+      $and: [{ status: true}]
+    })
+
+    res.json({
+      results: users
+    })
   } catch (error) {
     console.log(error)
     res.status(500).json({
       message: 'Error search user'
+    })
+  }
+}
+
+const searchCategories = async (term = '', res  = response) => {
+  try {
+
+    const isMongoId = ObjectId.isValid( term );
+
+    if (isMongoId) {
+      const category = await Category.findById( term );
+      return res.json({
+        results: ( category ) ? [ category ] : []
+      })
+    }
+
+    const regex = new RegExp(term, 'i');
+
+    const categories = await Category.find({ name: regex, status: true })
+
+    res.json({
+      results: categories
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      message: 'Error search categories'
+    })
+  }
+}
+
+const searchProducts = async (term = '', res  = response) => {
+  try {
+
+    const isMongoId = ObjectId.isValid( term );
+
+    if (isMongoId) {
+      const product = await Product.findById( term ).populate('category', 'name');
+      return res.json({
+        results: ( product ) ? [ product ] : []
+      })
+    }
+
+    const regex = new RegExp(term, 'i');
+
+    const products = await Product.find({name: regex, status: true}).populate('category', 'name');
+
+    res.json({
+      results: products
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      message: 'Error search products'
     })
   }
 }
@@ -41,19 +105,15 @@ const search = (req = request, res = response) => {
 
   switch (collection) {
     case 'users':
-      searchUser(term, res)
+      searchUsers(term, res)
     break;
 
     case 'categories':
-      
+      searchCategories(term, res)
     break;
 
     case 'products':
-      
-    break;
-
-    case 'users':
-      
+      searchProducts(term, res)
     break;
   
     default:
