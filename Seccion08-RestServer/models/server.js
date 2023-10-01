@@ -35,6 +35,7 @@ class Server {
     this.app.use('/api/categories', require('../routes/categories.routes'))
     this.app.use('/api/products', require('../routes/products.routes'))
     this.app.use('/api/search', require('../routes/search.routes'))
+    this.app.use('/api/uploads', require('../routes/uploads.routes'))
 
   }
 
