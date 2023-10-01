@@ -25,6 +25,11 @@ const getCategoryById = async (req = request, res = response) => {
   const { id } = req.params;
   const category = await Category.findById( id ).populate('user', 'name');
 
+  if (!category.status) {
+    return res.status(400).json({
+      message: 'Category deleted'
+    })
+  }
   res.json( category );
 }
 
@@ -64,8 +69,13 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req = request, res = response) => {
 
-  const { id } = req.params
-
+  const { id } = req.params;
+  const category = await Category.findByIdAndUpdate(id, {status: false}, {new: true})
+  
+  res.json({
+    message: 'Category deleted!',
+    category
+  });
 }
 
 module.exports = {

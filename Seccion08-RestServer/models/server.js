@@ -31,8 +31,10 @@ class Server {
 
   routes(){
     this.app.use('/api/auth', require('../routes/auth.routes'))
-    this.app.use('/api/user', require('../routes/user.routes'))
-    this.app.use('/api/category', require('../routes/category.routes'))
+    this.app.use('/api/users', require('../routes/users.routes'))
+    this.app.use('/api/categories', require('../routes/categories.routes'))
+    this.app.use('/api/products', require('../routes/products.routes'))
+    this.app.use('/api/search', require('../routes/search.routes'))
 
   }
 
